@@ -8,6 +8,7 @@ from tensorflow.keras.layers import (
 import math as m
 from tabtransformertf.models.embeddings import CEmbedding, NEmbedding
 
+@keras.saving.register_keras_serializable('transformer')
 class FTTransformerEncoder(tf.keras.Model):
     def __init__(
         self,
@@ -143,7 +144,32 @@ class FTTransformerEncoder(tf.keras.Model):
         else:
             return transformer_inputs
 
+    def get_config(self):
+        config = {
+            'categorical_features': self.categorical,
+            'numerical_features': self.numerical,
+            'numerical_data': self.numerical_embeddings.X if hasattr(self, 'numerical_embeddings') else None,
+            'categorical_data': self.categorical_embeddings.X if hasattr(self, 'categorical_embeddings') else None,
+            'y': self.numerical_embeddings.y if hasattr(self, 'numerical_embeddings') else None,
+            'task': self.numerical_embeddings.task if hasattr(self, 'numerical_embeddings') else None,
+            'embedding_dim': self.embedding_dim,
+            'depth': self.depth,
+            'heads': self.heads,
+            'attn_dropout': self.attn_dropout,
+            'ff_dropout': self.ff_dropout,
+            'numerical_embedding_type': self.numerical_embedding_type,
+            'numerical_bins': self.numerical_embeddings.n_bins if hasattr(self, 'numerical_embeddings') else None,
+            'ple_tree_params': self.numerical_embeddings.tree_params if hasattr(self, 'numerical_embeddings') else None,
+            'explainable': self.explainable,
+        }
+        
+        instance_variables = vars(self)
+        config.update(instance_variables)
 
+        return config
+
+
+@keras.saving.register_keras_serializable('transformer')
 class FTTransformer(tf.keras.Model):
     def __init__(
         self,
@@ -202,3 +228,27 @@ class FTTransformer(tf.keras.Model):
             return {"output": output, "importances": expl}
         else:
             return output
+
+    def get_config(self):
+        config = {
+            'out_dim': self.output_layer.units,
+            'out_activation': self.output_layer.activation.__name__,
+            'categorical_features': self.encoder.categorical,
+            'numerical_features': self.encoder.numerical,
+            'categorical_lookup': self.encoder.categorical_lookup,
+            'embedding_dim': self.encoder.embedding_dim,
+            'depth': self.encoder.depth,
+            'heads': self.encoder.heads,
+            'attn_dropout': self.encoder.attn_dropout,
+            'ff_dropout': self.encoder.ff_dropout,
+            'numerical_embedding_type': self.encoder.numerical_embedding_type,
+            'numerical_embeddings': self.encoder.numerical_embeddings,
+            'explainable': self.encoder.explainable,
+            'encoder': self.encoder,
+        }
+        
+        instance_variables = vars(self)
+        config.update(instance_variables)
+
+        return config
+

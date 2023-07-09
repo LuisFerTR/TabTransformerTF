@@ -14,7 +14,7 @@ from tensorflow.keras.layers import (
     MultiHeadAttention,
 )
 
-
+@keras.saving.register_keras_serializable('transformer')
 class TransformerBlock(Layer):
     def __init__(
         self,
@@ -92,8 +92,24 @@ class TransformerBlock(Layer):
             return transformer_output, att_weights
         else:
             return transformer_output
+        
+    def get_config(self):
+        config = {
+            'embed_dim': self.embed_dim,
+            'num_heads': self.num_heads,
+            'ff_dim': self.ff_dim,
+            'att_dropout': self.att_dropout,
+            'ff_dropout': self.ff_dropout,
+            'explainable': self.explainable,
+            'post_norm': self.post_norm,
+        }
+        
+        instance_variables = vars(self)
+        config.update(instance_variables)
 
+        return config
 
+@keras.saving.register_keras_serializable('transformer')
 class TabTransformerEncoder(tf.keras.Model):
     def __init__(
         self,
@@ -238,8 +254,27 @@ class TabTransformerEncoder(tf.keras.Model):
             mlp_input = self.pre_mlp_concatenation([mlp_input, numerical_inputs])
 
         return mlp_input
+    
+    def get_config(self):
+        config = {
+            'categorical_features': self.categorical,
+            'numerical_features': self.numerical,
+            'categorical_lookup': self.categorical_lookups,
+            'embedding_dim': self.embedding_dim,
+            'depth': self.depth,
+            'heads': self.heads,
+            'attn_dropout': self.attn_dropout,
+            'ff_dropout': self.ff_dropout,
+            'numerical_embeddings': self.numerical_embeddings,
+            'use_column_embedding': self.use_column_embedding,
+        }
+        
+        instance_variables = vars(self)
+        config.update(instance_variables)
 
+        return config
 
+@keras.saving.register_keras_serializable('transformer')
 class TabTransformerRTD(tf.keras.Model):
     def __init__(
         self,
@@ -299,8 +334,29 @@ class TabTransformerRTD(tf.keras.Model):
 
     def get_encoder(self):
         return self.encoder
+    
+    def get_config(self):
+        config = {
+            'categorical_features': self.encoder.categorical,
+            'numerical_features': self.encoder.numerical,
+            'categorical_lookup': self.encoder.categorical_lookups,
+            'embedding_dim': self.encoder.embedding_dim,
+            'depth': self.encoder.depth,
+            'heads': self.encoder.heads,
+            'attn_dropout': self.encoder.attn_dropout,
+            'ff_dropout': self.encoder.ff_dropout,
+            'numerical_discretisers': self.encoder.numerical_discretisers,
+            'use_column_embedding': self.encoder.use_column_embedding,
+            'rtd_factor': self.rtd_factor,
+        }
+        
+        instance_variables = vars(self)
+        config.update(instance_variables)
+
+        return config
 
 
+@keras.saving.register_keras_serializable('transformer')
 class TabTransformer(tf.keras.Model):
     def __init__(
         self,
@@ -358,3 +414,26 @@ class TabTransformer(tf.keras.Model):
         output = self.output_layer(x)
 
         return output
+    
+    def get_config(self):
+        config = {
+            'out_dim': self.output_layer.units,
+            'out_activation': self.output_layer.activation.__name__,
+            'categorical_features': self.encoder.categorical,
+            'numerical_features': self.encoder.numerical,
+            'categorical_lookup': self.encoder.categorical_lookups,
+            'embedding_dim': self.encoder.embedding_dim,
+            'depth': self.encoder.depth,
+            'heads': self.encoder.heads,
+            'attn_dropout': self.encoder.attn_dropout,
+            'ff_dropout': self.encoder.ff_dropout,
+            'numerical_discretisers': self.encoder.numerical_discretisers,
+            'use_column_embedding': self.encoder.use_column_embedding,
+            'mlp_hidden_factors': self.mlp_final.hidden_factors,
+            'encoder': self.encoder,
+        }
+        
+        instance_variables = vars(self)
+        config.update(instance_variables)
+
+        return config
