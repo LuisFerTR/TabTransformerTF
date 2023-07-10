@@ -16,6 +16,7 @@ setup(
     ],
     install_requires=[
         "tensorflow>=2.6.2",
+        "keras>=2.13",
         "pandas>=1.1.1",
         "numpy>=1.19.5",
         "tqdm>=4.64.0",
