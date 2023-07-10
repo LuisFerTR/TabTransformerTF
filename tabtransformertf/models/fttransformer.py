@@ -8,7 +8,7 @@ from tensorflow.keras.layers import (
 import math as m
 from tabtransformertf.models.embeddings import CEmbedding, NEmbedding
 
-@keras.saving.register_keras_serializable('transformer')
+@tf.keras.saving.register_keras_serializable('transformer')
 class FTTransformerEncoder(tf.keras.Model):
     def __init__(
         self,
@@ -169,7 +169,7 @@ class FTTransformerEncoder(tf.keras.Model):
         return config
 
 
-@keras.saving.register_keras_serializable('transformer')
+@tf.keras.saving.register_keras_serializable('transformer')
 class FTTransformer(tf.keras.Model):
     def __init__(
         self,

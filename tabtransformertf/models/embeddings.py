@@ -3,7 +3,7 @@ import numpy as np
 import math as m
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 
-@keras.saving.register_keras_serializable(package='embeddings')
+@tf.keras.saving.register_keras_serializable(package='embeddings')
 class PLE(tf.keras.layers.Layer):
     def __init__(self, n_bins=10):
         super(PLE, self).__init__()
@@ -68,7 +68,7 @@ class PLE(tf.keras.layers.Layer):
     def get_config(self):
         return {"n_bins": self.n_bins}
 
-@keras.saving.register_keras_serializable(package='embeddings')
+@tf.keras.saving.register_keras_serializable(package='embeddings')
 class Periodic(tf.keras.layers.Layer):
     def __init__(self, emb_dim, n_bins=50, sigma=5):
         super(Periodic, self).__init__()
@@ -104,7 +104,7 @@ class Periodic(tf.keras.layers.Layer):
                 'emb_dim': self.emb_dim, 
                 'sigma': self.sigma}
 
-@keras.saving.register_keras_serializable(package='embeddings')
+@tf.keras.saving.register_keras_serializable(package='embeddings')
 class NEmbedding(tf.keras.Model):
     def __init__(
         self,
@@ -204,7 +204,7 @@ class NEmbedding(tf.keras.Model):
 
         return config
 
-@keras.saving.register_keras_serializable(package='embeddings')
+@tf.keras.saving.register_keras_serializable(package='embeddings')
 class CEmbedding(tf.keras.Model):
     def __init__(
         self,

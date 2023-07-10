@@ -14,7 +14,7 @@ from tensorflow.keras.layers import (
     MultiHeadAttention,
 )
 
-@keras.saving.register_keras_serializable('transformer')
+@tf.keras.saving.register_keras_serializable('transformer')
 class TransformerBlock(Layer):
     def __init__(
         self,
@@ -109,7 +109,7 @@ class TransformerBlock(Layer):
 
         return config
 
-@keras.saving.register_keras_serializable('transformer')
+@tf.keras.saving.register_keras_serializable('transformer')
 class TabTransformerEncoder(tf.keras.Model):
     def __init__(
         self,
@@ -274,7 +274,7 @@ class TabTransformerEncoder(tf.keras.Model):
 
         return config
 
-@keras.saving.register_keras_serializable('transformer')
+@tf.keras.saving.register_keras_serializable('transformer')
 class TabTransformerRTD(tf.keras.Model):
     def __init__(
         self,
@@ -356,7 +356,7 @@ class TabTransformerRTD(tf.keras.Model):
         return config
 
 
-@keras.saving.register_keras_serializable('transformer')
+@tf.keras.saving.register_keras_serializable('transformer')
 class TabTransformer(tf.keras.Model):
     def __init__(
         self,
